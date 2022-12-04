@@ -1,8 +1,12 @@
 {
-  "name": "html-fund-me-fcc",
+  "name": "client",
   "version": "1.0.0",
-  "description": "",
-  "devDependencies": {
-    "http-server": "^14.1.0"
-  }
+  "description": "*[⌨️ (12:32:57) Lesson 8: HTML / Javascript Fund Me (Full Stack / Front End)](https://www.youtube.com/watch?v=gyMwXuJrbJQ&t=45177s)*",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

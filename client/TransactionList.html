@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+</head>
+<body>
+    <div class="container d-flex flex-column mt-5 align-items-center justify-content-center">
+        <div class="card shadow-sm p-3 mb-5 bg-body rounded transaction" id="transCard" style="width: 18rem;">
+            <div class="card-body">
+              <p class="card-text">From: <small class="card-text fw-light mt-1 ms-1 py-2 fromAct"></small></p>
+              <p class="card-text">To: <small class="card-text fw-light mt-1 ms-1 py-2 toAct"></small></p>
+              <p class="card-text">Amount: <small class="card-text fw-light mt-1 ms-1 amount"></small></p>
+              <p class="card-text">Time: <small class="card-text fw-light mt-1 ms-1 py-2 time"></small></p>
+              <p class="card-text">Message: <small class="card-text fw-light mt-1 ms-1 py-2 message"></small></p>
+              <a href="6" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        clone();
+        function clone(){
+            const availableTransactions=JSON.parse(localStorage.availableTransactions);
+            console.log(availableTransactions);
+            for(let i=0;i<availableTransactions.length-1;i++){
+                const h1 = document.getElementById("transCard");
+                const node = document.importNode(h1, true);
+                document.querySelector(".container").appendChild(node)
+            }
+            const structuredTransactions = availableTransactions.map((transaction) => ({
+                addressTo: transaction[0],
+                addressFrom: transaction[1],
+                timestamp: new Date(parseInt(transaction[3].hex)),
+                message: transaction[4],
+                amount: parseInt(transaction[2].hex) / (10 ** 18)
+            }));
+            console.log(structuredTransactions)
+
+            const items=document.getElementsByClassName("transaction");
+            console.log(items);
+            let counter=0;
+            structuredTransactions.map((transaction)=>{
+                // console.log(transaction.addressTo);
+                // console.log(transaction.addressFrom);
+                // console.log(transaction.timestamp);
+                // console.log(transaction.message);
+                // console.log(transaction.amount);
+                const from=items[counter].querySelector(".fromAct");
+                const to=items[counter].querySelector(".toAct");
+                const amount=items[counter].querySelector(".amount");
+                const time=items[counter].querySelector(".time");
+                const message=items[counter].querySelector(".message");
+                from.innerHTML=transaction.addressFrom;
+                to.innerHTML=transaction.addressTo;
+                amount.innerHTML=transaction.amount;
+                time.innerHTML=transaction.timestamp;
+                message.innerHTML=transaction.message;
+                counter+=1;
+                
+            })    
+        }
+
+    </script>
+</body>
+</html>

@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 pragma experimental ABIEncoderV2;
+
 contract Funds {
     //Smart Contract owner will be the person who deploys the contract only he can authorize various roles like retailer, Manufacturer,etc
     address public Owner;
 
     //note this constructor will be called when smart contract will be deployed on blockchain
-    constructor() {
+    constructor() public{
         Owner = msg.sender;
     }
 
@@ -31,7 +32,7 @@ contract Funds {
         string place;
     }
     
-    mapping(uint=>Organization) public orgs;
+    mapping(address=>Organization) public orgs;
 
     struct Payment{//transactioin details
         address sender;
@@ -55,8 +56,16 @@ contract Funds {
         string memory _place
     ) public onlyOwner(){
         orgCnt+=1;
-        orgs[orgCnt]=Organization(_address,orgCnt,_name,_place);
+        orgs[_address]=Organization(_address,orgCnt,_name,_place);
         emit AddOrg(_address,orgCnt,_name,_place);
+    }
+
+    event removeOrg(uint id, address addr, string name, string place);
+    function removeOrganization(
+        address _address
+    ) public onlyOwner(){
+        emit removeOrg(orgs[_address].id, orgs[_address].addr, orgs[_address].name, orgs[_address].place);
+        delete orgs[_address];
     }
 
     event AddSup(address addr,uint id,string name,string place);
@@ -74,16 +83,29 @@ contract Funds {
 
     event Pay(address from,address to, uint amount, uint time,string message);
 
-    function pay(address payable rec,uint amount,string memory message) public payable {
+    function pay(address rec,uint amount,string memory message) public{
         transactionCount+=1;
         payments.push(Payment(msg.sender,rec, amount, block.timestamp, message));
-        // bool sent = rec.send(msg.value);
+        // bool sent = rec.send(amount);
         // require(sent, "Failed to send Ether");
         emit Pay(msg.sender,rec, amount,block.timestamp, message);
     }
 
-    function getAllTransactions() public view returns (Payment[] memory){
+    function getAllTransactions() public view returns(Payment[] memory){
         return payments;
+    }
+    Payment[] vals;
+    function getSpecificTrans(address addr) public returns(address[] memory,uint[] memory){
+        address[] memory addresses=new address[](payments.length);
+        uint[] memory amounts=new uint[](payments.length);
+        for(uint i=0;i<payments.length;i++){
+            addresses[i]=payments[i].sender;
+            amounts[i]=payments[i].amt;
+            if(payments[i].sender==addr){
+                vals.push(payments[i]);
+            }
+        }
+        return (addresses,amounts);
     }
 
     struct Request{
@@ -124,5 +146,4 @@ contract Funds {
             confOrders.push(Confirmation(msg.sender, receiver, block.timestamp, message));
             emit ConfirmOrder(msg.sender, receiver, block.timestamp, message);
     }
- 
 }
