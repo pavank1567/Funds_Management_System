@@ -94,19 +94,6 @@ contract Funds {
     function getAllTransactions() public view returns(Payment[] memory){
         return payments;
     }
-    Payment[] vals;
-    function getSpecificTrans(address addr) public returns(address[] memory,uint[] memory){
-        address[] memory addresses=new address[](payments.length);
-        uint[] memory amounts=new uint[](payments.length);
-        for(uint i=0;i<payments.length;i++){
-            addresses[i]=payments[i].sender;
-            amounts[i]=payments[i].amt;
-            if(payments[i].sender==addr){
-                vals.push(payments[i]);
-            }
-        }
-        return (addresses,amounts);
-    }
 
     struct Request{
         address sender;

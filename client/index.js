@@ -135,14 +135,6 @@ async function getAllTransactions(){
       localStorage.setItem("availableTransactions",JSON.stringify(availableTransactions));
       location.href = "TransactionList.html";
 
-      // const structuredTransactions = availableTransactions.map((transaction) => ({
-      //   addressTo: transaction.receiver,
-      //   addressFrom: transaction.sender,
-      //   timestamp: new Date(transaction.timestamp.toNumber() * 1000).toLocaleString(),
-      //   message: transaction.message,
-      //   amount: parseInt(transaction.amt._hex) / (10 ** 18)
-      // }));
-
     } catch (error) {
       console.log(error)
     }
