@@ -67,7 +67,7 @@ contract Funds {
         emit removeOrg(orgs[_address].id, orgs[_address].addr, orgs[_address].name, orgs[_address].place);
         delete orgs[_address];
     }
-    function getOrganization(address _address) public view returns (Organization){
+    function getOrganization(address _address) public view returns (Organization memory){
         return orgs[_address];
     }
 
@@ -80,7 +80,7 @@ contract Funds {
         string memory _place
     ) public onlyOwner(){
         supCnt+=1;
-        suppliers[supCnt]=Supplier(_address,supCnt,_name,_place);
+        suppliers[_address]=Supplier(_address,supCnt,_name,_place);
         emit AddSup(_address,orgCnt,_name,_place);
     }
     function removeSupplier(
@@ -90,7 +90,7 @@ contract Funds {
         delete suppliers[_address];
     }
 
-    function getSuplier(address _address) public view returns(Supplier){
+    function getSuplier(address _address) public view returns(Supplier memory){
         return suppliers[_address];
     }
 
