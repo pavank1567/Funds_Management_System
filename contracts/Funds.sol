@@ -23,7 +23,7 @@ contract Funds {
         string place;
     }
 
-    mapping(uint=>Supplier) public suppliers;
+    mapping(address=>Supplier) public suppliers;
 
     struct Organization{
         address addr;
@@ -67,8 +67,12 @@ contract Funds {
         emit removeOrg(orgs[_address].id, orgs[_address].addr, orgs[_address].name, orgs[_address].place);
         delete orgs[_address];
     }
+    function getOrganization(address _address) public view returns (Organization){
+        return orgs[_address];
+    }
 
     event AddSup(address addr,uint id,string name,string place);
+    event removeSup(uint id,address addr,string name,string place);
 
     function addSupplier(
         address _address,
@@ -79,7 +83,16 @@ contract Funds {
         suppliers[supCnt]=Supplier(_address,supCnt,_name,_place);
         emit AddSup(_address,orgCnt,_name,_place);
     }
+    function removeSupplier(
+        address _address
+    ) public onlyOwner(){
+        emit removeSup(suppliers[_address].id, suppliers[_address].addr, suppliers[_address].name, suppliers[_address].place);
+        delete suppliers[_address];
+    }
 
+    function getSuplier(address _address) public view returns(Supplier){
+        return suppliers[_address];
+    }
 
     event Pay(address from,address to, uint amount, uint time,string message);
 
