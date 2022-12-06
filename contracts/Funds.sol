@@ -11,11 +11,14 @@ contract Funds {
         Owner = msg.sender;
     }
 
+    //Modifier to restrict the access to owner
     modifier onlyOwner() {
         require(msg.sender == Owner);
         _;
     }
 
+
+    //Structure which represents a Supplier
     struct Supplier{
         address addr;
         uint id;
@@ -23,8 +26,10 @@ contract Funds {
         string place;
     }
 
+    //Mapping to maintain the record of suppliers
     mapping(address=>Supplier) public suppliers;
 
+    //Structure which represents an Organization
     struct Organization{
         address addr;
         uint id;
@@ -32,6 +37,7 @@ contract Funds {
         string place;
     }
     
+    //Mapping to maintain the record of Organizations
     mapping(address=>Organization) public orgs;
 
     struct Payment{//transactioin details
@@ -42,14 +48,17 @@ contract Funds {
         string message;
     }
 
+    //Payment Array to store the records of payments
     Payment[] public payments;
 
     uint supCnt=0;
     uint orgCnt=0;
     uint transactionCount=0;
 
+    //An event to be emitted when an organization is added.
     event AddOrg(address addr,uint id,string name,string place);
 
+    //A function is used to add an organization
     function addOrganization(
         address _address,
         string memory _name,
@@ -60,20 +69,30 @@ contract Funds {
         emit AddOrg(_address,orgCnt,_name,_place);
     }
 
+    //Event to be emitted when an organization is removed.
     event removeOrg(uint id, address addr, string name, string place);
+
+    //A function which is used to remove an organization
     function removeOrganization(
         address _address
     ) public onlyOwner(){
         emit removeOrg(orgs[_address].id, orgs[_address].addr, orgs[_address].name, orgs[_address].place);
         delete orgs[_address];
     }
+
+    //Function to get Organization details by it's account address
     function getOrganization(address _address) public view returns (Organization memory){
         return orgs[_address];
     }
 
+
+    //Event which is to be emitted when a Supplier is added
     event AddSup(address addr,uint id,string name,string place);
+
+    //Event which is to be emitted when a Supplier is removed
     event removeSup(uint id,address addr,string name,string place);
 
+    //Function to add a Spplier
     function addSupplier(
         address _address,
         string memory _name,
@@ -83,6 +102,8 @@ contract Funds {
         suppliers[_address]=Supplier(_address,supCnt,_name,_place);
         emit AddSup(_address,orgCnt,_name,_place);
     }
+
+    //Function to remove a supplier
     function removeSupplier(
         address _address
     ) public onlyOwner(){
@@ -90,20 +111,22 @@ contract Funds {
         delete suppliers[_address];
     }
 
+    //Function to get Supplier details by account address
     function getSuplier(address _address) public view returns(Supplier memory){
         return suppliers[_address];
     }
 
+    //The Event to be emitted when payment is done
     event Pay(address from,address to, uint amount, uint time,string message);
 
+    //Function to make a payment
     function pay(address rec,uint amount,string memory message) public{
         transactionCount+=1;
         payments.push(Payment(msg.sender,rec, amount, block.timestamp, message));
-        // bool sent = rec.send(amount);
-        // require(sent, "Failed to send Ether");
         emit Pay(msg.sender,rec, amount,block.timestamp, message);
     }
 
+    //Function to get the record of all transactions available
     function getAllTransactions() public view returns(Payment[] memory){
         return payments;
     }
@@ -115,11 +138,14 @@ contract Funds {
         string message;
         uint timestamp;
     }
+
+    //Array of requests
     Request[] public requests;
 
-
+    //Event to be emitted when a request is made
     event Req(address from,address to,uint value,string message,uint time);
 
+    //Function to request funds
     function requestFunds(
         address provider,
         uint amt,
@@ -137,8 +163,11 @@ contract Funds {
     }
 
     Confirmation[] confOrders;
+
+    //Event to be emitted when the supplier confirms the payment of request for goods is received.
     event ConfirmOrder(address from, address to,uint timestamp,string message);
     
+    //Function to confirm the order
     function confirmOrder(
         address receiver,
         string memory message
