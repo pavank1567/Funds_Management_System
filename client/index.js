@@ -23,7 +23,6 @@ async function connect() {
 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-    // console.log(accounts);
     const account = accounts[0];
     currentAccount=ethers.utils.getAddress(account);
 
@@ -55,7 +54,6 @@ paymentButton.addEventListener('click', () => {
   if(currentAccount){ 
 
     localStorage.setItem("currentAccount",currentAccount);
-    // location.href="TransactionList.html";
     if(paymentContainer[0].style.display=="none"){
       for(let i=0;i<paymentContainer.length;i++)
         paymentContainer[i].style.display="";
@@ -82,7 +80,6 @@ async function transfer() {
     const signer = provider.getSigner()
     const contract = new ethers.Contract(contractAddress, abi, signer);
 
-    // console.log(contract);
     try {
       const parsedAmt=ethers.utils.parseEther(amount);
       await ethereum.request({
@@ -94,14 +91,11 @@ async function transfer() {
         }],
       });
 
-      // const transactionHash = await contract.pay(receiver, parsedAmt, message,{value: parsedAmt});
       const transactionHash=await contract.pay(receiver,parsedAmt,message);
 
-      var isLoading=true;
       console.log(`Loading - ${transactionHash.hash}`);
       await transactionHash.wait();
       console.log(`Success - ${transactionHash.hash}`);
-      isLoading=false;
 
     } catch (error) {
       console.log(error)
